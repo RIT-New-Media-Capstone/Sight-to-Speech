@@ -1,0 +1,28 @@
+#content{
+    display:flex;
+    flex-direction: column;
+    justify-content:space-between;
+}
+
+#title{
+    text-align: center;
+}
+
+#buttons{
+    display:flex;
+    flex-direction: row;
+    justify-content:space-around;
+}
+
+button{
+    width:20%;
+    height:20%;
+    border: none;
+    border-radius: 5px;
+    background-color: aquamarine;
+}
+
+#myCanvas{
+    text-align: center;
+    border-radius: 20px;
+}
