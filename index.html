@@ -6,23 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="module" src="./src/index.js"></script>
     <link rel="stylesheet" type='text/css' href="./index.css">
-    <title>Document</title>
+    <title>Sight to speech</title>
 </head>
 <body>
     <div id=content>
         <h1 id="title">Sight to speech</h1>
         <div>
-            <video id="vid"></video>
-            <canvas id="myCanvas"></canvas>
+            <video id="vid" playsinline autoplay loop> Can't load video :(</video>
+            <canvas id="imgCanvas" style="display: none;"></canvas>
+            <img id="myImage" style="display: none;">
         </div>
         <br />
         <div id="buttons">
-            <button id="take-pic" autoplay>
-                Placeholder button
+            <button id="take-pic">
+                Take photo
+            </button>
+            <button id="back-to-cam" style='display:none;' disabled>
+                back to camera
             </button>
             <button id="settings">
                 placeholder settings
             </button>
+        </div>
+        <div id="picture-day">
+
         </div>
     </div>
 </body>
