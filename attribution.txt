@@ -1,0 +1,6 @@
+File for icon attribution:
+
+camera icon: Icon by IconsMind with a free use license at http://www.iconsmind.com/
+back icon: Icon by Custom Icon Design, with a non-commercial use license, found at: https://www.iconarchive.com/show/mono-general-1-icons-by-custom-icon-design/back-icon.html
+voice icon: Icon by Aniket Suvarna, with an MIT (open source) license, found at: https://www.iconarchive.com/show/box-regular-icons-by-aniket-suvarna/bx-user-voice-icon.html
+settings icon: Icon by Icons8 with a free use license at http://icons8.com/license/

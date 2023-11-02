@@ -24,7 +24,7 @@
 #buttons{
     display:flex;
     flex-direction: row;
-    justify-content:space-around;
+    justify-content:space-between;
 }
 
 button{
@@ -35,6 +35,14 @@ button{
     background-color: aquamarine;
     transition-property: box-shadow;
     transition-duration: 0.2s;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    margin:5px;
+}
+img{
+    width:50%;
+    height:50%;
 }
 
 button:hover{

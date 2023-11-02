@@ -1,9 +1,11 @@
 const videoButton = document.getElementById('take-pic');
 const backButton = document.getElementById('back-to-cam');
+const voiceButton = document.getElementById('speech-btn');
 const video = document.getElementById('vid');
 const imgCanvas = document.getElementById('imgCanvas');
 const image = document.getElementById('myImage');
 const errorMessage = document.querySelector("#you-got-trouble");
+let iconSize = 50;
 const setErrorMessage = (message) => errorMessage.innerHTML = message?.toString();
 let height = 320;
 let width = 0;
@@ -55,12 +57,7 @@ async function init() {
 
 function clearPhoto() {
     let context = imgCanvas.getContext('2d');
-    imgCanvas.style.display = 'none';
-    video.style.display = 'block';
-    videoButton.disabled = false;
-    videoButton.style.backgroundColor = 'aquamarine';
-    videoButton.style.display = 'block';
-    backButton.style.display = 'none';
+    switchState();
     let data = imgCanvas.toDataURL('image/png');
     image.setAttribute('src', data);
 }
@@ -68,15 +65,7 @@ function clearPhoto() {
 function takePicture() {
     let context = imgCanvas.getContext('2d');
     if (width && height) {
-        imgCanvas.width = width;
-        imgCanvas.height = height;
-        video.style.display = 'none';
-        imgCanvas.style.display = 'block';
-        backButton.style.display = 'block';
-        videoButton.disabled = true;
-        videoButton.style.display = 'none';
-        backButton.disabled = false;
-        videoButton.style.backgroundColor = 'grey';
+        switchState();
         context.drawImage(video, 0, 0, width, height);
         let data = imgCanvas.toDataURL('image/png');
         image.setAttribute('src', data);
@@ -96,6 +85,45 @@ function recordVideo(event) {
         video.src = videoUrl;
     }
 }
+
+function switchState(){
+    //change to image state
+    if(imgCanvas.style.display = 'none'){
+        imgCanvas.width = width;
+        imgCanvas.height = height;
+        video.style.display = 'none';
+        imgCanvas.style.display = 'block';
+        backButton.style.display = 'block';
+        voiceButton.style.display='block';
+        voiceButton.disabled = false;
+        videoButton.disabled = true;
+        videoButton.style.display = 'none';
+        backButton.disabled = false;
+        videoButton.style.backgroundColor = 'grey';
+    }else{
+        imgCanvas.style.display = 'none';
+        video.style.display = 'block';
+        videoButton.disabled = false;
+        videoButton.style.backgroundColor = 'aquamarine';
+        videoButton.style.display = 'block';
+        backButton.style.display = 'none';
+        voiceButton.disabled=true;
+        voiceButton.style.display='none';
+    }
+}
+
+const settingsModal = createDomElement(`
+    <div id='settings-modal'>
+        <div class='modal-content'>
+            <P id='settings-header'>Settings</P>
+            <div id='settings bars'>
+                <input type='range' id='icon-size' name='icon-size' min='50' max='200' value=${iconSize}, step='10'/>
+                <label for='icon-size'>Icon Size</label>
+            </div>
+
+        </div>
+    </div>
+`);
 
 window.onload = () => {
     try {
