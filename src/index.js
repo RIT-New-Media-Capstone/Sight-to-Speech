@@ -1,3 +1,5 @@
+const WORD_CONFIDENCE_THRESHOLD = 20;
+
 const videoButton = document.getElementById('take-pic');
 const backButton = document.getElementById('back-to-cam');
 const video = document.getElementById('vid');
@@ -5,9 +7,12 @@ const imgCanvas = document.getElementById('imgCanvas');
 const image = document.getElementById('myImage');
 const errorMessage = document.querySelector("#you-got-trouble");
 const setErrorMessage = (message) => errorMessage.innerHTML = message?.toString();
-let height = 320;
+let height = 640;
 let width = 0;
 let streaming = false;
+
+const { createWorker, createScheduler } = Tesseract;
+const scheduler = createScheduler();
 
 videoButton.onclick = (ev) => {
     takePicture();
@@ -25,6 +30,20 @@ function deviceIsBackCamera(deviceInfo) {
 }
 
 async function init() {
+    setErrorMessage("Initializing Tesseract.js");
+    const workerCount = 1;
+    for (let i = 0; i < workerCount; i++) {
+        const worker = createWorker();
+        setErrorMessage(`Loading worker (${i + 1}/${workerCount})`);
+        await worker.load();
+        setErrorMessage(`Loading English (${i + 1}/${workerCount})`);
+        await worker.loadLanguage('eng');
+        setErrorMessage(`Initializing English (${i + 1}/${workerCount})`);
+        await worker.initialize('eng');
+        scheduler.addWorker(worker);
+    }
+    setErrorMessage("Initialized Tesseract.js; awaiting camera");
+
     try {
         // https://simpl.info/getusermedia/sources/js/main.js
         const deviceInfos = await navigator.mediaDevices.enumerateDevices();
@@ -36,21 +55,23 @@ async function init() {
                     exact: backCamera.deviceId,
                 } : undefined,
             },
-            height: 320,
-            width: 240
+            height: 1080,
+            width: 1080
         });
         window.stream = stream;
         video.srcObject = stream;
     } catch (err) {
         setErrorMessage(err);
     }
+
+    setErrorMessage("Ready");
     video.addEventListener('canplay', (event) => {
         if (!streaming) {
             width = video.videoWidth / (video.videoHeight / height);
 
             if (isNaN(width)) width = height / (4 / 3);
         }
-    })
+    });
 }
 
 function clearPhoto() {
@@ -63,9 +84,10 @@ function clearPhoto() {
     backButton.style.display = 'none';
     let data = imgCanvas.toDataURL('image/png');
     image.setAttribute('src', data);
+    setErrorMessage("Ready");
 }
 
-function takePicture() {
+async function takePicture() {
     let context = imgCanvas.getContext('2d');
     if (width && height) {
         imgCanvas.width = width;
@@ -80,9 +102,44 @@ function takePicture() {
         context.drawImage(video, 0, 0, width, height);
         let data = imgCanvas.toDataURL('image/png');
         image.setAttribute('src', data);
+        setErrorMessage("Parsing text");
+
+        const paragraphsFiltered = await parseCanvas(imgCanvas);
+        console.log(paragraphsFiltered);
+        setErrorMessage(paragraphsFiltered.map(pgraph => pgraph.wordList.map(word => word.text).join(" ")).join(" / "));
     } else {
         clearPhoto();
     }
+}
+
+async function parseCanvas(canvas) {
+    const ocrResult = await scheduler.addJob('recognize', canvas);
+    console.log(ocrResult);
+    const paragraphsFiltered = [];
+    const { paragraphs } = ocrResult.data;
+    for (let i = 0; i < paragraphs.length; i++) {
+        const wordList = [];
+        const { lines } = paragraphs[i];
+        for (let j = 0; j < lines.length; j++) {
+            const { words } = lines[j];
+            for (let k = 0; k < words.length; k++) {
+                const word = words[k];
+                const { confidence, text } = word;
+                const alphaNumericCount = text.replace(/[^0-9A-Za-z]/gi, "").length;
+                if (confidence > WORD_CONFIDENCE_THRESHOLD && alphaNumericCount >= text.length - alphaNumericCount) {
+                    wordList.push({
+                        ...word,
+                        symbols: undefined,
+                        choices: undefined,
+                    });
+                }
+            }
+        }
+        if (wordList.length > 0) {
+            paragraphsFiltered.push({ wordList });
+        }
+    }
+    return paragraphsFiltered;
 }
 
 function recordVideo(event) {
