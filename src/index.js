@@ -125,6 +125,7 @@ async function parseCanvas(canvas) {
             for (let k = 0; k < words.length; k++) {
                 const word = words[k];
                 const { confidence, text } = word;
+                // https://stackoverflow.com/questions/7349312/how-to-count-the-number-of-letters-in-a-random-string
                 const alphaNumericCount = text.replace(/[^0-9A-Za-z]/gi, "").length;
                 if (confidence > WORD_CONFIDENCE_THRESHOLD && alphaNumericCount >= text.length - alphaNumericCount) {
                     wordList.push({
