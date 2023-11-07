@@ -17,6 +17,7 @@ videoButton.onclick = (ev) => {
 }
 
 backButton.onclick = (ev) => {
+    console.log('backtocam clicked')
     clearPhoto();
     ev.preventDefault();
 }
@@ -38,8 +39,6 @@ async function init() {
                     exact: backCamera.deviceId,
                 } : undefined,
             },
-            height: 320,
-            width: 240
         });
         window.stream = stream;
         video.srcObject = stream;
@@ -88,7 +87,7 @@ function recordVideo(event) {
 
 function switchState(){
     //change to image state
-    if(imgCanvas.style.display = 'none'){
+    if(imgCanvas.style.display== 'none'){
         imgCanvas.width = width;
         imgCanvas.height = height;
         video.style.display = 'none';
@@ -102,6 +101,7 @@ function switchState(){
         videoButton.style.backgroundColor = 'grey';
     }else{
         imgCanvas.style.display = 'none';
+        image.style.display = 'none';
         video.style.display = 'block';
         videoButton.disabled = false;
         videoButton.style.backgroundColor = 'aquamarine';
@@ -112,18 +112,7 @@ function switchState(){
     }
 }
 
-const settingsModal = createDomElement(`
-    <div id='settings-modal'>
-        <div class='modal-content'>
-            <P id='settings-header'>Settings</P>
-            <div id='settings bars'>
-                <input type='range' id='icon-size' name='icon-size' min='50' max='200' value=${iconSize}, step='10'/>
-                <label for='icon-size'>Icon Size</label>
-            </div>
 
-        </div>
-    </div>
-`);
 
 window.onload = () => {
     try {
