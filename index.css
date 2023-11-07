@@ -57,7 +57,7 @@ button:hover{
 
 
 
-#myCanvas{
+#imgCanvas{
     text-align: center;
-    border-radius: 20px;
+    width: 320px;
 }
