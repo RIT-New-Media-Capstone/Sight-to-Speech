@@ -42,14 +42,14 @@
           el.classList.remove("highlight");
         });
 
-        // Add highlight to the current word
+        // Adding highlight to the current word
         const wordEl = document.getElementById(`word${index}`);
         if (wordEl) {
           wordEl.classList.add("highlight");
         }
       }
 
-      // Set up speech synthesis
+      // Setting up speech synthesis
       const utterance = new SpeechSynthesisUtterance(text);
       let wordIndex = 0;
 
