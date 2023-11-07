@@ -21,49 +21,65 @@
     <div id="textContainer"></div>
 
     <script>
-      // The text that will be given to us from after conversion from image
-      const text =
-        "What did one Frenchman say to the other ? I don't know, I don't speak French.";
-      const words = text.split(/\s+/);
-      const textContainer = document.getElementById("textContainer");
+      document.addEventListener("DOMContentLoaded", function () {
+        const text =
+          "What did one Frenchman say to the other? I don't know, I don't speak French.";
+        const textContainer = document.getElementById("textContainer");
 
-      // Populate the container with words
-      words.forEach((word, index) => {
-        const span = document.createElement("span");
-        span.textContent = word + " ";
-        span.id = `word${index}`;
-        textContainer.appendChild(span);
-      });
+        // Create a version of the text that removes punctuation for highlighting purposes
+        const words = text.match(/\b(\w+)'?(\w+)?\b/g);
 
-      // Function to highlight word
-      function highlightWord(index) {
-        // Clear previous highlights
-        document.querySelectorAll(".highlight").forEach((el) => {
-          el.classList.remove("highlight");
+        // Populate the container with spans for each word
+        words.forEach((word, index) => {
+          const span = document.createElement("span");
+          span.textContent = word + " ";
+          span.id = `word${index}`;
+          textContainer.appendChild(span);
         });
 
-        // Adding highlight to the current word
-        const wordEl = document.getElementById(`word${index}`);
-        if (wordEl) {
-          wordEl.classList.add("highlight");
-        }
-      }
+        // Function to highlight word
+        function highlightWord(index) {
+          // Clear previous highlights
+          document.querySelectorAll(".highlight").forEach((el) => {
+            el.classList.remove("highlight");
+          });
 
-      // Setting up speech synthesis
-      const utterance = new SpeechSynthesisUtterance(text);
-      let wordIndex = 0;
-
-      utterance.onboundary = function (event) {
-        if (event.name === "word") {
-          highlightWord(wordIndex++);
+          // Adding highlight to the current word
+          const wordEl = document.getElementById(`word${index}`);
+          if (wordEl) {
+            wordEl.classList.add("highlight");
+          }
         }
-      };
 
-      document.getElementById("speakButton").addEventListener("click", () => {
-        if (speechSynthesis.speaking) {
-          speechSynthesis.cancel();
-        }
-        speechSynthesis.speak(utterance);
+        // Setting up speech synthesis
+        const utterance = new SpeechSynthesisUtterance(text);
+        let wordIndex = 0;
+
+        utterance.onboundary = function (event) {
+          if (event.name === "word") {
+            highlightWord(wordIndex++);
+          }
+        };
+
+        utterance.onend = function () {
+          // Remove the highlight after the speech has finished with a delay of 3 seconds
+          setTimeout(() => {
+            document.querySelectorAll(".highlight").forEach((el) => {
+              el.classList.remove("highlight");
+            });
+          }, 3000);
+
+          // Reset wordIndex for the next button press
+          wordIndex = 0;
+        };
+
+        document.getElementById("speakButton").addEventListener("click", () => {
+          if (speechSynthesis.speaking) {
+            speechSynthesis.cancel();
+          } else {
+            speechSynthesis.speak(utterance);
+          }
+        });
       });
     </script>
   </body>
