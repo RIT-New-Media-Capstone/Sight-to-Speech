@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Text to Speech Demo</title>
+    <style>
+      #textContainer span {
+        display: inline-block;
+        margin-right: 2px;
+        padding: 2px;
+      }
+      .highlight {
+        background-color: yellow;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="speakButton">Speak the Text</button>
+    <div id="textContainer"></div>
+
+    <script>
+      // The text that will be given to us from after conversion from image
+      const text =
+        "What did one Frenchman say to the other ? I don't know, I don't speak French.";
+      const words = text.split(/\s+/);
+      const textContainer = document.getElementById("textContainer");
+
+      // Populate the container with words
+      words.forEach((word, index) => {
+        const span = document.createElement("span");
+        span.textContent = word + " ";
+        span.id = `word${index}`;
+        textContainer.appendChild(span);
+      });
+
+      // Function to highlight word
+      function highlightWord(index) {
+        // Clear previous highlights
+        document.querySelectorAll(".highlight").forEach((el) => {
+          el.classList.remove("highlight");
+        });
+
+        // Add highlight to the current word
+        const wordEl = document.getElementById(`word${index}`);
+        if (wordEl) {
+          wordEl.classList.add("highlight");
+        }
+      }
+
+      // Set up speech synthesis
+      const utterance = new SpeechSynthesisUtterance(text);
+      let wordIndex = 0;
+
+      utterance.onboundary = function (event) {
+        if (event.name === "word") {
+          highlightWord(wordIndex++);
+        }
+      };
+
+      document.getElementById("speakButton").addEventListener("click", () => {
+        if (speechSynthesis.speaking) {
+          speechSynthesis.cancel();
+        }
+        speechSynthesis.speak(utterance);
+      });
+    </script>
+  </body>
+</html>
