@@ -1,63 +1,86 @@
-*{
+* {
     margin: 0;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#content{
-    display:flex;
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+#content {
+    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content:space-evenly;
-    height: 90vh;
+    justify-content: space-evenly;
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }
 
-#vid{
-    width: 80vw;
+#mainDisplayContainerOuter {
+    flex-grow: 1;
+    flex-shrink: 1;
+    width: 100%;
 }
 
-canvas{
-    width:80vw;
+#mainDisplayContainerInner {
+    display: block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 0;
+    left: 0;
 }
 
-#title{
+#vid, #imgCanvas {
+    width: inherit;
+    height: inherit;
     text-align: center;
 }
 
-#buttons{
-    display:flex;
+#buttons {
+    display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    width:90vw;
+    width: 90vw;
+    margin-bottom: 1rem;
 }
 
-.btn{
-    width:20vw;
+#title {
+    margin-top: 1rem;
+}
+
+.btn {
+    width: 20vw;
+    height: 20vw;
     border: none;
     border-radius: 50%;
     background-color: aquamarine;
     transition-property: box-shadow;
     transition-duration: 0.2s;
-    display:flex;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
 
-img{
-    width:75%;
-    height:75%;
-}
-
-button:hover{
-    cursor:pointer;
+.btn:hover {
+    cursor: pointer;
     box-shadow: grey 0 0 3px 3px;
     transition-property: box-shadow;
     transition-duration: 0.2s;
 }
 
+.btn>img {
+    width: 75%;
+    height: 75%;
+}
 
-
-#imgCanvas{
+#youGotTrouble {
+    white-space: nowrap;
+    overflow-x: scroll;
+    width: inherit;
+    font-size: 2rem;
     text-align: center;
-    width: 320px;
 }
